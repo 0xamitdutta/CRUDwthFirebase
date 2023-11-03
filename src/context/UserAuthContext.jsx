@@ -6,21 +6,24 @@ import {
     onAuthStateChanged,
     GoogleAuthProvider,
     signInWithPopup,
+    OAuthProvider
 } from "firebase/auth"
 import { auth } from "../config/firebase";
 
 const UserAuthContext = createContext();
 
 export const UserAuthContextProvider = ({ children }) => {
+
     const [user, setUser] = useState(null);
-    const provider = new GoogleAuthProvider();
+    const googleProvider = new GoogleAuthProvider();
+    const microsoftProvider = new OAuthProvider('microsoft.com');
 
     const signUpUser = (email, password) => {
         return createUserWithEmailAndPassword(auth, email, password);
     }
 
     const signInWithGoogle = () => {
-        return signInWithPopup(auth, provider);
+        return signInWithPopup(auth, googleProvider);
     }
 
     const logInUser = (email, password) => {
@@ -31,6 +34,10 @@ export const UserAuthContextProvider = ({ children }) => {
         return signOut(auth);
     }
 
+    const signInWithMicrosoft = () => {
+        return signInWithPopup(auth, microsoftProvider);
+    }
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser)
@@ -39,7 +46,7 @@ export const UserAuthContextProvider = ({ children }) => {
     }, [])
 
     return (
-        <UserAuthContext.Provider value={{signUpUser, signInWithGoogle, logInUser, logOutUser, user}}>
+        <UserAuthContext.Provider value={{signUpUser, signInWithGoogle, signInWithMicrosoft, logInUser, logOutUser, user}}>
             {children}
         </UserAuthContext.Provider>
     )

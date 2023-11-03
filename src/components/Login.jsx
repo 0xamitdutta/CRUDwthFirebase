@@ -1,6 +1,7 @@
 import { React, useState } from 'react'
 import { Container, TextField, Button } from '@mui/material'
-import GoogleButton from 'react-google-button'
+import { FcGoogle, } from 'react-icons/fc'
+import { TiVendorMicrosoft } from 'react-icons/ti'
 import { Link, useNavigate } from 'react-router-dom'
 import { useUserAuth } from '../context/UserAuthContext'
 
@@ -8,7 +9,7 @@ const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
-    const { logInUser, signInWithGoogle } = useUserAuth()
+    const { logInUser, signInWithGoogle, signInWithMicrosoft } = useUserAuth()
     const navigate = useNavigate()
 
     const handleLogin = async () => {
@@ -30,27 +31,34 @@ const Login = () => {
         }
     }
 
+    const handleMicrosoftLogin = async () => {
+        try {
+            await signInWithMicrosoft()
+            navigate('/users')
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
     return (
         <div>
-            <Container maxWidth="sm" style={{ backgroundColor: "#fff", height: "675px" }}>
-                <h1 style={{ marginLeft: "200px", paddingTop:"20px" }}>LOGIN</h1>
-                {error && <h3 style={{ marginLeft: "50px", color:"red" }}>ERROR: {error}</h3>}
-                <div>
-                    <TextField style={{ marginTop: "75px", marginLeft: "100px", width: "300px" }}
+            <Container maxWidth="sm" style={{ backgroundColor: "#fff", height: "675px", width: "600px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+                <h1 style={{ paddingTop: "20px" }}>WELCOME BACK</h1>
+                {error && <h3 style={{ marginLeft: "50px", color: "red" }}>ERROR: {error}</h3>}
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                    <TextField style={{ marginTop: "75px", width: "300px" }}
                         label="Email" type="email" onChange={(event) => setEmail(event.target.value)}
                     />
-                    <TextField style={{ marginTop: "50px", marginLeft: "100px", width: "300px" }}
+                    <TextField style={{ marginTop: "25px", width: "300px" }}
                         id="outlined-password-input"
                         label="Password" type="password" onChange={(event) => setPassword(event.target.value)}
                     />
                 </div>
-                <div>
-                    <Button style={{ marginTop: "50px", marginLeft: "100px", width: "300px" }} variant="contained" color='primary' size='large' onClick={handleLogin}>Login</Button>
-
-                </div>
-                <GoogleButton style={{ marginTop: "50px", marginLeft: "100px", width: "300px" }} onClick={handleGoogleLogin} />
-                <div style={{ marginTop: "50px", marginLeft: "100px" }}>
-                    Don't have an account? <Link to="/signup">Sign up</Link>
+                <Button style={{ marginTop: "50px", width: "300px" }} variant="contained" color='inherit' size='large' onClick={handleLogin}>Login</Button>
+                <Button startIcon={<FcGoogle />} style={{ marginTop: "25px", width: "300px" }} variant="contained" color='inherit' size='large' onClick={handleGoogleLogin}>Login with Google</Button>
+                <Button startIcon={<TiVendorMicrosoft />} style={{ marginTop: "25px", width: "300px" }} variant="contained" color='inherit' size='large' onClick={handleMicrosoftLogin}>Login with Microsoft</Button>
+                <div style={{ marginTop: "50px", display: "flex", justifyContent: "center" }}>
+                    Dont have an account?<Link to="/signup"> Sign up</Link>
                 </div>
             </Container>
         </div>

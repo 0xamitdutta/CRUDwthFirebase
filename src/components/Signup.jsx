@@ -6,6 +6,7 @@ import { useUserAuth } from '../context/UserAuthContext'
 const Signup = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+
     const { signUpUser } = useUserAuth()
 
     const handleSubmit = async () => {
@@ -19,7 +20,7 @@ const Signup = () => {
 
     return (
         <Container maxWidth="sm" style={{ backgroundColor: "#fff", height: "675px" }}>
-            <h1 style={{ marginLeft: "200px", paddingTop:"20px" }}>SIGNUP</h1>
+            <h1 style={{ marginLeft: "200px", paddingTop:"20px" }}>CREATE AN ACCOUNT</h1>
             <div>
                 <TextField style={{ marginTop: "100px", marginLeft: "100px", width: "300px" }}
                     label="Email" type="email"
