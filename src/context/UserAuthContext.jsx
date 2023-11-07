@@ -6,9 +6,11 @@ import {
     onAuthStateChanged,
     GoogleAuthProvider,
     signInWithPopup,
-    OAuthProvider
+    OAuthProvider,
+    multiFactor,
 } from "firebase/auth"
 import { auth } from "../config/firebase";
+import { toast } from 'react-toastify';
 
 const UserAuthContext = createContext();
 
@@ -38,6 +40,13 @@ export const UserAuthContextProvider = ({ children }) => {
         return signInWithPopup(auth, microsoftProvider);
     }
 
+    const verifyIfUserIsEnrolledInMFA = () => {
+        const enrolledFactors = multiFactor(user).enrolledFactors;
+        return enrolledFactors.length > 0; 
+    }
+
+    const notify = (message) => toast(message);
+
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser)
@@ -45,8 +54,9 @@ export const UserAuthContextProvider = ({ children }) => {
         return () => unsubscribe();
     }, [])
 
+
     return (
-        <UserAuthContext.Provider value={{signUpUser, signInWithGoogle, signInWithMicrosoft, logInUser, logOutUser, user}}>
+        <UserAuthContext.Provider value={{signUpUser, signInWithGoogle, signInWithMicrosoft, logInUser, logOutUser, user, verifyIfUserIsEnrolledInMFA, notify}}>
             {children}
         </UserAuthContext.Provider>
     )

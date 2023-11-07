@@ -1,9 +1,11 @@
-import { React, useState } from 'react'
+import { useState } from 'react'
 import { Container, TextField, Button } from '@mui/material'
 import { FcGoogle, } from 'react-icons/fc'
 import { TiVendorMicrosoft } from 'react-icons/ti'
 import { Link, useNavigate } from 'react-router-dom'
 import { useUserAuth } from '../context/UserAuthContext'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Login = () => {
     const [email, setEmail] = useState('')
@@ -13,12 +15,15 @@ const Login = () => {
     const navigate = useNavigate()
 
     const handleLogin = async () => {
-        setError('')
         try {
+            setError('')
             await logInUser(email, password)
             navigate('/users')
         } catch (error) {
             setError(error.message)
+            toast.error(error.message, {
+                position: toast.POSITION.TOP_RIGHT
+            });
         }
     }
 
@@ -27,7 +32,10 @@ const Login = () => {
             await signInWithGoogle()
             navigate('/users')
         } catch (error) {
-            console.log(error)
+            setError(error.message)
+            toast.error(error.message, {
+                position: toast.POSITION.TOP_RIGHT
+            });
         }
     }
 
@@ -36,7 +44,13 @@ const Login = () => {
             await signInWithMicrosoft()
             navigate('/users')
         } catch (error) {
-            console.log(error)
+            toast.error('Failed to Log In !', {
+                position: toast.POSITION.TOP_RIGHT
+            });
+            setError(error.message)
+            toast.error(error.message, {
+                position: toast.POSITION.TOP_RIGHT
+            });
         }
     }
 
@@ -44,7 +58,7 @@ const Login = () => {
         <div>
             <Container maxWidth="sm" style={{ backgroundColor: "#fff", height: "675px", width: "600px", display: "flex", flexDirection: "column", alignItems: "center" }}>
                 <h1 style={{ paddingTop: "20px" }}>WELCOME BACK</h1>
-                {error && <h3 style={{ marginLeft: "50px", color: "red" }}>ERROR: {error}</h3>}
+                {error && <ToastContainer />}
                 <div style={{ display: "flex", flexDirection: "column" }}>
                     <TextField style={{ marginTop: "75px", width: "300px" }}
                         label="Email" type="email" onChange={(event) => setEmail(event.target.value)}
@@ -58,7 +72,7 @@ const Login = () => {
                 <Button startIcon={<FcGoogle />} style={{ marginTop: "25px", width: "300px" }} variant="contained" color='inherit' size='large' onClick={handleGoogleLogin}>Login with Google</Button>
                 <Button startIcon={<TiVendorMicrosoft />} style={{ marginTop: "25px", width: "300px" }} variant="contained" color='inherit' size='large' onClick={handleMicrosoftLogin}>Login with Microsoft</Button>
                 <div style={{ marginTop: "50px", display: "flex", justifyContent: "center" }}>
-                    Dont have an account?<Link to="/signup"> Sign up</Link>
+                    <span>Dont have an account ? &nbsp;</span> <Link to="/signup">Sign Up</Link>
                 </div>
             </Container>
         </div>
